@@ -20,8 +20,6 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
  */
-
-
 /*
 	The software from this repository was modified by mkisho.
 */
@@ -38,12 +36,6 @@
 #include "gui.h"
 #include "lepton-threads.h"
 
-/*
- * IMPORTANT THINGS:
- * 
- * A Comprehensive Guide to Installing and Configuring OpenCV 2.4.2 on Ubuntu
- * http://www.ozbotz.org/opencv-installation/
- */
 
 
 int main( int argc, char **argv )
@@ -61,54 +53,24 @@ int main( int argc, char **argv )
 	pthread_mutex_init(&mutex_FLIRImage, NULL);
 	pthread_mutex_init(&mutex_flirData, NULL); 
 
-	// creating the FLIR image
-	//loadImage("maw.png");
+	//creating the FLIR image
 	createFLIRImage(); 
 
-	// creating GUI
-//	buildGUI();
-//
-/*
-	printf("\nCreating video writer...\n");
-	printf("File Name=%s\nFPS=%.1f\nW=%d\nH=%d\nColor=%d\n", VIDEO_FILE_NAME,VIDEO_FPS,VIDEO_WIDTH,VIDEO_HEIGHT,IS_VIDEO_COLOR);
-	videoWriter = cvCreateVideoWriter("maw_test0000.avi",//VIDEO_FILE_NAME, 
-									  CV_FOURCC('H', '2', '6', '4'),
-									  VIDEO_FPS,
-									  cvSize(VIDEO_WIDTH, VIDEO_HEIGHT),
-									  IS_VIDEO_COLOR);
-	if (videoWriter)
-		printf("\nVideo writer successfuly created.\n");
-	else
-		printf("\nPROBLEMS !!!\n");
-*/
 
-
-	//pthread_t t1;
-	//pthread_create(&t1, NULL, readImageFromFLIR_andDisplay, NULL);
-
-	// creating application threads
 	pthread_t thread_readFLIR;
 	pthread_create(&thread_readFLIR, NULL, readDataFromFLIR, NULL);
-
-//	pthread_t thread_displayFLIRImage;
-//	pthread_create(&thread_displayFLIRImage, NULL, displayFLIRDataAsImage, NULL);
-	
-//	pthread_t thread_writeFLIRVideo;
-//	pthread_create(&thread_writeFLIRVideo, NULL, writeFLIRVideo, NULL);
 
 	// infinite loop to avoid the program to finish
 	app_exit = 0;
 	while(!app_exit){
 		char key = 1;
-		// keyboard commands
 		switch(key){
 		case 27:
 			app_exit = 1;
 			continue;
 		}
-//		updateWindow();
 	}
-	
+
 	// wait until all threads finish
 #ifndef DEBUG
 	printf("\n\nWaiting for thread 1 to complete...\n");
@@ -117,11 +79,11 @@ int main( int argc, char **argv )
 
 	// Closing SPI port
 	SpiClosePort(0);
-	
+
 	// Releasing allocated resources
 	pthread_mutex_destroy(&mutex_FLIRImage);
 	pthread_mutex_destroy(&mutex_flirData);
-		
+
 	printf("\nEnd !!\n\n\n");
 	return 0;
 }

@@ -1,10 +1,7 @@
 #ifndef OCV_GUI
 #define OCV_GUI
 
-//#include <cv.h>
 #include "/opt/ros/kinetic/include/opencv-3.3.1-dev/opencv2/imgproc/imgproc.hpp"
-//#include <opencv2/imgproc/imgproc.hpp>
-//#include <highgui.h>
 #include <pthread.h>
 
 

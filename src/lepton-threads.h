@@ -1,14 +1,11 @@
  #ifndef LEPTON_THREAD
  #define LEPTON_THREAD
  
- //#include <cv.h>
- //#include <highgui.h>
  #include <pthread.h>
  
  #include "Palettes.h"
  #include "SPI.h"
  #include "Lepton_I2C.h"
- //#include "ocv-gui.h"
  
  #define PACKET_SIZE 164
  #define PACKET_SIZE_UINT16 (PACKET_SIZE/2)
@@ -19,8 +16,8 @@
  #define FLIR_MAX_VALUE 65535
  #define FLIR_MIN_VALUE 0
  
- // compilatio options
- 
+ // compilation options
+
  // this indicates whether the max/min values should be unique
  // for the whole viode
  #define __SINGLE_MAX_MIN_VALUE 1	
@@ -44,8 +41,6 @@
  extern uint16_t minValue;
  extern uint16_t maxValue;
  
- // global variable for the video writer
- //extern CvVideoWriter *videoWriter;
  
  extern void *readImageFromFLIR_andDisplay(void *ptr);
  extern void *readDataFromFLIR(void *ptr);
