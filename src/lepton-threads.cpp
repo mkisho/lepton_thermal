@@ -2,7 +2,7 @@
 #include "utils.h"
 #include "ros/ros.h"
 #include "std_msgs/String.h"
-#include "lepton/Num.h"
+#include "lepton_msgs/Num.h"
 
 #include <sstream>
 
@@ -26,12 +26,13 @@ uint16_t maxValue = FLIR_MIN_VALUE;
  *****************************/
 void *readDataFromFLIR(void *ptr) {
         ros::NodeHandle n;
-        ros::Publisher chatter_pub = n.advertise<lepton::Num>("chatter", 1000);
+        ros::Publisher chatter_pub = n.advertise<lepton_msgs::Num>("thermic_image", 1000);
+
 //	ros::Rate loop_rate(10);
 	int count = 0;
 //	while (!app_exit) {
 	while (ros::ok()){
-		lepton::Num msg;
+		lepton_msgs::Num msg;
 #ifdef DEBUG
 		printf("FLIR sensor is being read...\n");
 #endif

@@ -48,7 +48,7 @@
 
 int main( int argc, char **argv )
 {
-	ros::init(argc, argv, "talker");
+	ros::init(argc, argv, "lepton_node");
 
 	// initialize SPI
 	int spi_status = SpiOpenPort(0);
