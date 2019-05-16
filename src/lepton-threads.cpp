@@ -3,6 +3,7 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "lepton_msgs/Num.h"
+#include "sensor_msgs/Image.h"
 
 #include <sstream>
 
@@ -13,6 +14,9 @@ pthread_mutex_t mutex_flirData; // controls the concurrent access to FLIR data
 uint16_t *flirFrameBuffer = (uint16_t *)flirData;
 uint16_t minValue = FLIR_MAX_VALUE;
 uint16_t maxValue = FLIR_MIN_VALUE;
+
+sensor_msgs::Image imagem;
+
 //extern int app_exit;
 
 
@@ -26,13 +30,14 @@ uint16_t maxValue = FLIR_MIN_VALUE;
  *****************************/
 void *readDataFromFLIR(void *ptr) {
         ros::NodeHandle n;
-        ros::Publisher chatter_pub = n.advertise<lepton_msgs::Num>("thermic_image", 1000);
+//        ros::Publisher chatter_pub = n.advertise<lepton_msgs::Num>("thermic_image", 1000);
+        ros::Publisher pub = n.advertise<sensor_msgs::Image>("lepton/thermic_image", 1000);
 
 //	ros::Rate loop_rate(10);
 	int count = 0;
 //	while (!app_exit) {
 	while (ros::ok()){
-		lepton_msgs::Num msg;
+//		lepton_msgs::Num msg;
 #ifdef DEBUG
 		printf("FLIR sensor is being read...\n");
 #endif
@@ -170,8 +175,17 @@ void *readDataFromFLIR(void *ptr) {
 //		
 		int c;
 		for(c=0; c<PACKET_SIZE*PACKETS_PER_FRAME; c++)
-			msg.dados[c] = flirData[c];
-		chatter_pub.publish(msg);
+			imagem.data[c] = flirData[c];
+		
+		imagem.header.seq=count;
+		imagem.header.stamp=ros::Time::now();
+		imagem.header.frame_id="lepton";
+		imagem.height=60;
+		imagem.width=80;
+		imagem.encoding="rgb8";
+		imagem.is_bigendian=0;
+		imagem.step=80;
+		pub.publish(imagem);
 		ros::spinOnce();
 //		loop_rate.sleep();
 		++count;

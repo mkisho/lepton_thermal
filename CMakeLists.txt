@@ -6,17 +6,15 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   roscpp
   std_msgs
-  lepton_msgs
   message_generation
 )
 
- generate_messages(
-   DEPENDENCIES
-   lepton_msgs
- )
+# generate_messages(
+#   DEPENDENCIES
+# )
 
 catkin_package(
-  CATKIN_DEPENDS geometry_msgs roscpp std_msgs lepton_msgs message_runtime  #opencv3
+  CATKIN_DEPENDS geometry_msgs roscpp std_msgs message_runtime  #opencv3
 )
 
 
