@@ -2,7 +2,6 @@
 #include "utils.h"
 #include "ros/ros.h"
 #include "std_msgs/String.h"
-#include "lepton_msgs/Num.h"
 #include "sensor_msgs/Image.h"
 
 #include <sstream>
@@ -15,7 +14,6 @@ uint16_t *flirFrameBuffer = (uint16_t *)flirData;
 uint16_t minValue = FLIR_MAX_VALUE;
 uint16_t maxValue = FLIR_MIN_VALUE;
 
-sensor_msgs::Image imagem;
 
 //extern int app_exit;
 
@@ -30,14 +28,14 @@ sensor_msgs::Image imagem;
  *****************************/
 void *readDataFromFLIR(void *ptr) {
         ros::NodeHandle n;
-//        ros::Publisher chatter_pub = n.advertise<lepton_msgs::Num>("thermic_image", 1000);
         ros::Publisher pub = n.advertise<sensor_msgs::Image>("lepton/thermic_image", 1000);
+	sensor_msgs::Image imagem;
 
-//	ros::Rate loop_rate(10);
+	ros::Rate loop_rate(10);
 	int count = 0;
 //	while (!app_exit) {
 	while (ros::ok()){
-//		lepton_msgs::Num msg;
+
 #ifdef DEBUG
 		printf("FLIR sensor is being read...\n");
 #endif
@@ -136,7 +134,7 @@ void *readDataFromFLIR(void *ptr) {
 				// this implementation has a fixed range of value for all images built from
 				// the sensor data, in order to have a unique color scale for the whole video
 				// the range of value increases smoothly and remains stable during the whole video
-								
+
 				if (minValue == FLIR_MAX_VALUE) {
 					// minus 5% to decrease the chance of abrupt variance
 					minValue = value - (value/20);
@@ -157,7 +155,7 @@ void *readDataFromFLIR(void *ptr) {
 				// the sensor data. In other words, the range is stablished for each frame,
 				// and hence, the color scale varies during the video
 				// the range of values may change at each frame
-				
+
 				minValue = value;
 				printf("MIN = %d\t\t*MAX* = %d\n", minValue, maxValue);
 #endif
@@ -172,22 +170,25 @@ void *readDataFromFLIR(void *ptr) {
 #ifdef DEBUG
 		printf("FLIR data has been completely read.\n");
 #endif
-//		
+//
 		int c;
-		for(c=0; c<PACKET_SIZE*PACKETS_PER_FRAME; c++)
-			imagem.data[c] = flirData[c];
-		
+		imagem.data.clear();
+		for(c=0; c<PACKETS_PER_FRAME; c++)
+			for(int w=4; w<PACKET_SIZE; w+=2){
+					imagem.data.push_back(flirData[c*PACKET_SIZE+w+1]);
+					imagem.data.push_back(flirData[c*PACKET_SIZE+w]);
+		}
 		imagem.header.seq=count;
 		imagem.header.stamp=ros::Time::now();
 		imagem.header.frame_id="lepton";
 		imagem.height=60;
 		imagem.width=80;
-		imagem.encoding="rgb8";
-		imagem.is_bigendian=0;
-		imagem.step=80;
+		imagem.encoding="mono16";
+		imagem.is_bigendian= 0;
+		imagem.step=160;
 		pub.publish(imagem);
 		ros::spinOnce();
-//		loop_rate.sleep();
+		loop_rate.sleep();
 		++count;
 
 

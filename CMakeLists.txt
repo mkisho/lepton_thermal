@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(lepton)
+project(lepton_thermal)
 
 
 find_package(catkin REQUIRED COMPONENTS
